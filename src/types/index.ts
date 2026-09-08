@@ -1,7 +1,7 @@
 export interface Product {
   id: string;
   name: string;
-  sku: string;
+  sku: string | null;
   description: string | null;
   category: string | null;
   price: number;
@@ -26,7 +26,7 @@ export interface InventoryMovement {
 
 export interface CreateProductInput {
   name: string;
-  sku: string;
+  sku?: string | null;
   description?: string;
   category?: string;
   price: number;

@@ -13,7 +13,7 @@ export const ProductCard = ({ product, onPress }: Props) => {
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={{ flex: 1 }}>
         <Text style={styles.name}>{product.name}</Text>
-        <Text style={styles.sku}>SKU: {product.sku}</Text>
+        <Text style={styles.sku}>QR: {product.sku}</Text>
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
       </View>
       <StockBadge stock={product.stock} minStock={product.minStock} />

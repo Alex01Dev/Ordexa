@@ -4,7 +4,7 @@ import { Product } from '../types';
 export interface TicketItem {
   productId: string;
   name: string;
-  sku: string;
+  sku: string | null;
   price: number;
   quantity: number;
   stock: number;

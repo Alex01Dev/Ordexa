@@ -27,7 +27,7 @@ export const ProductListScreen = ({ navigation }: Props) => {
     <View style={styles.container}>
       <TextInput
         style={styles.search}
-        placeholder="Buscar por nombre o SKU..."
+        placeholder="Buscar por nombre o QR..."
         value={search}
         onChangeText={(text) => {
           setSearch(text);
