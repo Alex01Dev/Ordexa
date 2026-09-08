@@ -9,33 +9,19 @@ import { ScannerScreen } from '../screens/ScannerScreen';
 import { Product, MovementType } from '../types';
 
 export type RootStackParamList = {
-    ProductList: undefined;
-
-    ProductForm: {
-        product?: Product;
-        prefill?: {
-            sku: string;
-            name?: string;
-            category?: string;
-            imageUrl?: string;
-        };
-    } | undefined;
-
-    ProductDetail: {
-        productId: string;
-        openMovementModal?: boolean;
-        presetMovementType?: MovementType;
-    };
-
-    LowStock: undefined;
-
-    Scanner: {
-        mode: 'IN' | 'SALE_ITEM';
-    };
-
-    Sale: {
-        scannedProduct?: Product;
-    } | undefined;
+  ProductList: undefined;
+  ProductForm: {
+    product?: Product;
+    prefill?: { sku: string; name?: string; category?: string; imageUrl?: string };
+  } | undefined;
+  ProductDetail: {
+    productId: string;
+    openMovementModal?: boolean;
+    presetMovementType?: MovementType;
+  };
+  LowStock: undefined;
+  Scanner: { mode: 'IN' | 'SALE_ITEM' };
+  Sale: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { initDatabase } from './src/database/schema';
 import { AppNavigator } from './src/navigation/AppNavigator';
+import { SaleTicketProvider } from './src/context/SaleTicketContext';
 import { View, ActivityIndicator } from 'react-native';
 
 export default function App() {
@@ -21,8 +22,10 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <AppNavigator />
-    </NavigationContainer>
+    <SaleTicketProvider>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </SaleTicketProvider>
   );
 }
