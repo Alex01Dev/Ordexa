@@ -25,6 +25,16 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-status-bar",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Ordexa necesita la cámara para escanear códigos de barras de productos."
+        }
+      ]
+    ]
   }
 }
