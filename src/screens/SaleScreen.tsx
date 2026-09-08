@@ -27,24 +27,12 @@ export const SaleScreen = ({ navigation }: Props) => {
         clearTicket,
     } = useSaleTicket();
 
-    // =========================
-    // BÚSQUEDA DE PRODUCTOS
-    // =========================
-
     const [searchVisible, setSearchVisible] = useState(false);
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
 
-    // =========================
-    // CÁLCULO DE CAMBIO
-    // =========================
-
     const [changeVisible, setChangeVisible] = useState(false);
     const [payment, setPayment] = useState('');
-
-    // =========================
-    // TOTAL
-    // =========================
 
     const total = ticket.reduce(
         (sum, item) => sum + item.price * item.quantity,
@@ -53,10 +41,6 @@ export const SaleScreen = ({ navigation }: Props) => {
 
     const paymentAmount = Number(payment) || 0;
     const change = paymentAmount - total;
-
-    // =========================
-    // BÚSQUEDA DE PRODUCTOS
-    // =========================
 
     const openProductSearch = () => {
         setSearch('');
@@ -70,10 +54,6 @@ export const SaleScreen = ({ navigation }: Props) => {
         const results = productRepository.getAll(text);
         setProducts(results);
     };
-
-    // =========================
-    // AGREGAR PRODUCTO
-    // =========================
 
     const handleAddProduct = (product: Product) => {
         if (product.stock <= 0) {
@@ -99,10 +79,6 @@ export const SaleScreen = ({ navigation }: Props) => {
         setProducts([]);
     };
 
-    // =========================
-    // CALCULAR CAMBIO
-    // =========================
-
     const openChangeCalculator = () => {
         if (ticket.length === 0) {
             Alert.alert(
@@ -120,10 +96,6 @@ export const SaleScreen = ({ navigation }: Props) => {
         setPayment('');
         setChangeVisible(false);
     };
-
-    // =========================
-    // CANCELAR VENTA
-    // =========================
 
     const handleCancelSale = () => {
         if (ticket.length === 0) {
@@ -150,10 +122,6 @@ export const SaleScreen = ({ navigation }: Props) => {
             ]
         );
     };
-
-    // =========================
-    // CONFIRMAR VENTA
-    // =========================
 
     const handleConfirmSale = () => {
         if (ticket.length === 0) {
@@ -199,9 +167,6 @@ export const SaleScreen = ({ navigation }: Props) => {
     return (
         <View style={styles.container}>
 
-            {/* =========================
-                BOTONES DE ACCIÓN
-            ========================= */}
 
             <View style={styles.actionButtons}>
 
@@ -229,9 +194,6 @@ export const SaleScreen = ({ navigation }: Props) => {
 
             </View>
 
-            {/* =========================
-                TICKET
-            ========================= */}
 
             <FlatList
                 data={ticket}
@@ -324,10 +286,6 @@ export const SaleScreen = ({ navigation }: Props) => {
                 }
             />
 
-            {/* =========================
-                FOOTER
-            ========================= */}
-
             <View style={styles.footer}>
 
                 <View style={styles.totalRow}>
@@ -341,8 +299,6 @@ export const SaleScreen = ({ navigation }: Props) => {
                     </Text>
 
                 </View>
-
-                {/* CALCULAR CAMBIO */}
 
                 <TouchableOpacity
                     style={styles.changeButton}
@@ -376,10 +332,6 @@ export const SaleScreen = ({ navigation }: Props) => {
                 </View>
 
             </View>
-
-            {/* ==================================================
-                MODAL - BUSCAR PRODUCTO
-            ================================================== */}
 
             <Modal
                 visible={searchVisible}
@@ -490,10 +442,6 @@ export const SaleScreen = ({ navigation }: Props) => {
                 </View>
             </Modal>
 
-            {/* ==================================================
-                MODAL - CALCULAR CAMBIO
-            ================================================== */}
-
             <Modal
                 visible={changeVisible}
                 animationType="slide"
@@ -503,8 +451,6 @@ export const SaleScreen = ({ navigation }: Props) => {
                 <View style={styles.changeModalOverlay}>
 
                     <View style={styles.changeModalContainer}>
-
-                        {/* HEADER */}
 
                         <View style={styles.changeModalHeader}>
 
@@ -522,7 +468,6 @@ export const SaleScreen = ({ navigation }: Props) => {
 
                         </View>
 
-                        {/* TOTAL */}
 
                         <View style={styles.changeTotalContainer}>
 
@@ -536,7 +481,6 @@ export const SaleScreen = ({ navigation }: Props) => {
 
                         </View>
 
-                        {/* PAGO DEL CLIENTE */}
 
                         <Text style={styles.paymentLabel}>
                             Cliente paga
@@ -552,7 +496,6 @@ export const SaleScreen = ({ navigation }: Props) => {
                             autoFocus
                         />
 
-                        {/* RESULTADO */}
 
                         {payment !== '' && (
                             <>
@@ -588,8 +531,6 @@ export const SaleScreen = ({ navigation }: Props) => {
                             </>
                         )}
 
-                        {/* CERRAR */}
-
                         <TouchableOpacity
                             style={styles.closeChangeButton}
                             onPress={closeChangeCalculator}
@@ -610,19 +551,12 @@ export const SaleScreen = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
 
-    // ==================================================
-    // CONTENEDOR
-    // ==================================================
 
     container: {
         flex: 1,
         backgroundColor: '#F9FAFB',
         padding: 16,
     },
-
-    // ==================================================
-    // BOTONES SUPERIORES
-    // ==================================================
 
     actionButtons: {
         gap: 8,
@@ -655,10 +589,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 16,
     },
-
-    // ==================================================
-    // TICKET
-    // ==================================================
 
     itemRow: {
         flexDirection: 'row',
@@ -732,10 +662,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 
-    // ==================================================
-    // TICKET VACÍO
-    // ==================================================
-
     emptyContainer: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -761,10 +687,6 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
 
-    // ==================================================
-    // FOOTER
-    // ==================================================
-
     footer: {
         borderTopWidth: 1,
         borderColor: '#E5E7EB',
@@ -789,10 +711,6 @@ const styles = StyleSheet.create({
         color: '#111827',
     },
 
-    // ==================================================
-    // BOTÓN CALCULAR CAMBIO
-    // ==================================================
-
     changeButton: {
         backgroundColor: '#fff',
         borderWidth: 1,
@@ -808,10 +726,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 15,
     },
-
-    // ==================================================
-    // ACCIONES DEL FOOTER
-    // ==================================================
 
     footerActions: {
         flexDirection: 'row',
@@ -844,10 +758,6 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         fontSize: 15,
     },
-
-    // ==================================================
-    // MODAL BUSCAR PRODUCTO
-    // ==================================================
 
     modalOverlay: {
         flex: 1,
@@ -961,10 +871,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         marginTop: 5,
     },
-
-    // ==================================================
-    // MODAL CALCULAR CAMBIO
-    // ==================================================
 
     changeModalOverlay: {
         flex: 1,

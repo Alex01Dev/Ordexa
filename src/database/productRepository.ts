@@ -36,9 +36,6 @@ export const productRepository = {
     return result ?? null;
   },
 
-  // =========================
-  // OBTENER POR SKU
-  // =========================
 
   getBySku(sku: string): Product | null {
     const result = db.getFirstSync<Product>(

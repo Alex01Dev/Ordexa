@@ -76,7 +76,7 @@ const CATEGORY_RULES: { category: StoreCategory; keywords: string[] }[] = [
 ];
 
 export function classifyCategory(categoryNames: string[] = []): StoreCategory {
-  // Revisa de la categoría MÁS ESPECÍFICA a la más general
+  // Revisa de la categoría MAS ESPECÍFICA a la más general
   const ordered = [...categoryNames].reverse();
 
   for (const raw of ordered) {

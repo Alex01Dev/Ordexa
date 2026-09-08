@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -18,28 +18,40 @@ import { Product } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Restock'>;
 
-export const RestockScreen = ({ navigation }: Props) => {
-
-    // ==================================================
-    // PRODUCTO SELECCIONADO
-    // ==================================================
+export const RestockScreen = ({ navigation, route }: Props) => {
 
     const [selectedProduct, setSelectedProduct] =
         useState<Product | null>(null);
 
     const [quantity, setQuantity] = useState('');
 
-    // ==================================================
-    // BÚSQUEDA
-    // ==================================================
-
     const [searchVisible, setSearchVisible] = useState(false);
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
 
-    // ==================================================
-    // ABRIR BÚSQUEDA
-    // ==================================================
+    useEffect(() => {
+        const productId = route.params?.productId;
+
+        if (!productId) {
+            return;
+        }
+
+        const product = productRepository.getById(productId);
+
+        if (product) {
+            setSelectedProduct(product);
+            setQuantity('');
+        } else {
+            Alert.alert(
+                'Producto no encontrado',
+                'No se pudo encontrar el producto escaneado.'
+            );
+        }
+
+        navigation.setParams({
+            productId: undefined,
+        });
+    }, [route.params?.productId, navigation]);
 
     const openProductSearch = () => {
         setSearch('');
@@ -47,20 +59,12 @@ export const RestockScreen = ({ navigation }: Props) => {
         setSearchVisible(true);
     };
 
-    // ==================================================
-    // BUSCAR PRODUCTO
-    // ==================================================
-
     const handleSearch = (text: string) => {
         setSearch(text);
 
         const results = productRepository.getAll(text);
         setProducts(results);
     };
-
-    // ==================================================
-    // SELECCIONAR PRODUCTO
-    // ==================================================
 
     const handleSelectProduct = (product: Product) => {
         setSelectedProduct(product);
@@ -70,10 +74,6 @@ export const RestockScreen = ({ navigation }: Props) => {
         setSearch('');
         setProducts([]);
     };
-
-    // ==================================================
-    // REABASTECER
-    // ==================================================
 
     const handleRestock = () => {
         if (!selectedProduct) {
@@ -132,14 +132,11 @@ export const RestockScreen = ({ navigation }: Props) => {
         } catch (error: any) {
             Alert.alert(
                 'Error al reabastecer',
-                error.message || 'No se pudo realizar el reabastecimiento.'
+                error.message ||
+                'No se pudo realizar el reabastecimiento.'
             );
         }
     };
-
-    // ==================================================
-    // ESCANEAR
-    // ==================================================
 
     const handleScan = () => {
         navigation.navigate('Scanner', {
@@ -147,16 +144,8 @@ export const RestockScreen = ({ navigation }: Props) => {
         });
     };
 
-    // ==================================================
-    // RENDER
-    // ==================================================
-
     return (
         <View style={styles.container}>
-
-            {/* ==================================================
-                ENCABEZADO
-            ================================================== */}
 
             <View style={styles.header}>
                 <Text style={styles.title}>
@@ -167,10 +156,6 @@ export const RestockScreen = ({ navigation }: Props) => {
                     Agrega existencias a un producto del inventario.
                 </Text>
             </View>
-
-            {/* ==================================================
-                BOTONES DE BÚSQUEDA
-            ================================================== */}
 
             <View style={styles.actionButtons}>
 
@@ -194,10 +179,6 @@ export const RestockScreen = ({ navigation }: Props) => {
 
             </View>
 
-            {/* ==================================================
-                PRODUCTO SELECCIONADO
-            ================================================== */}
-
             {selectedProduct ? (
 
                 <View style={styles.selectedContainer}>
@@ -215,11 +196,13 @@ export const RestockScreen = ({ navigation }: Props) => {
                             </Text>
 
                             <Text style={styles.selectedCategory}>
-                                {selectedProduct.category ?? 'Sin categoría'}
+                                {selectedProduct.category ??
+                                    'Sin categoría'}
                             </Text>
 
                             <Text style={styles.selectedSku}>
-                                {selectedProduct.sku ?? 'Sin código'}
+                                {selectedProduct.sku ??
+                                    'Sin código'}
                             </Text>
 
                         </View>
@@ -238,8 +221,6 @@ export const RestockScreen = ({ navigation }: Props) => {
 
                     </View>
 
-                    {/* STOCK ACTUAL */}
-
                     <View style={styles.stockContainer}>
 
                         <Text style={styles.stockLabel}>
@@ -251,8 +232,6 @@ export const RestockScreen = ({ navigation }: Props) => {
                         </Text>
 
                     </View>
-
-                    {/* CANTIDAD */}
 
                     <Text style={styles.quantityLabel}>
                         Cantidad a agregar
@@ -266,8 +245,6 @@ export const RestockScreen = ({ navigation }: Props) => {
                         placeholder="Ej. 10"
                         placeholderTextColor="#9CA3AF"
                     />
-
-                    {/* NUEVO STOCK */}
 
                     {quantity.trim() !== '' &&
                         Number(quantity) > 0 &&
@@ -286,7 +263,6 @@ export const RestockScreen = ({ navigation }: Props) => {
                             </View>
                         )}
 
-                    {/* BOTÓN REABASTECER */}
 
                     <TouchableOpacity
                         style={styles.restockButton}
@@ -323,10 +299,6 @@ export const RestockScreen = ({ navigation }: Props) => {
                 </View>
             )}
 
-            {/* ==================================================
-                MODAL BUSCAR PRODUCTO
-            ================================================== */}
-
             <Modal
                 visible={searchVisible}
                 animationType="slide"
@@ -340,7 +312,6 @@ export const RestockScreen = ({ navigation }: Props) => {
 
                     <View style={styles.modalContainer}>
 
-                        {/* HEADER */}
 
                         <View style={styles.modalHeader}>
 
@@ -368,7 +339,6 @@ export const RestockScreen = ({ navigation }: Props) => {
 
                         </View>
 
-                        {/* BUSCADOR */}
 
                         <TextInput
                             style={styles.searchInput}
@@ -379,7 +349,6 @@ export const RestockScreen = ({ navigation }: Props) => {
                             autoFocus
                         />
 
-                        {/* LISTA */}
 
                         <FlatList
                             data={products}
@@ -682,10 +651,6 @@ const styles = StyleSheet.create({
         color: '#6B7280',
         lineHeight: 21,
     },
-
-    // ==================================================
-    // MODAL
-    // ==================================================
 
     modalOverlay: {
         flex: 1,

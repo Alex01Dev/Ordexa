@@ -85,7 +85,6 @@ export const ProductDetailScreen = ({ navigation, route }: Props) => {
 
   return (
     <View style={styles.container}>
-      {/* Ficha principal del producto */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Text style={styles.name}>{product.name}</Text>
@@ -124,7 +123,6 @@ export const ProductDetailScreen = ({ navigation, route }: Props) => {
         </View>
       </View>
 
-      {/* Acciones: solo editar y eliminar */}
       <View style={styles.actionsRow}>
         <TouchableOpacity style={styles.editBtn} onPress={() => navigation.navigate('ProductForm', { product })}>
           <Text style={styles.editBtnText}>✏️  Editar producto</Text>
@@ -134,7 +132,6 @@ export const ProductDetailScreen = ({ navigation, route }: Props) => {
         </TouchableOpacity>
       </View>
 
-      {/* Historial de movimientos */}
       <Text style={styles.sectionTitle}>Historial de movimientos</Text>
       <FlatList
         data={movements}
@@ -171,7 +168,6 @@ export const ProductDetailScreen = ({ navigation, route }: Props) => {
         }
       />
 
-      {/* Modal de movimiento: se abre automáticamente al venir del escáner */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>

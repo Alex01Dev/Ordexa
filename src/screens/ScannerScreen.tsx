@@ -60,9 +60,6 @@ export const ScannerScreen = ({ navigation, route }: Props) => {
 
     const existing = productRepository.getBySku(code);
 
-    // ─────────────────────────────────────
-    // VENTA
-    // ─────────────────────────────────────
     if (mode === 'SALE_ITEM') {
       setLoading(false);
 
@@ -102,9 +99,6 @@ export const ScannerScreen = ({ navigation, route }: Props) => {
       return;
     }
 
-    // ─────────────────────────────────────
-    // REABASTECIMIENTO
-    // ─────────────────────────────────────
     if (mode === 'RESTOCK') {
       setLoading(false);
 
@@ -130,9 +124,6 @@ export const ScannerScreen = ({ navigation, route }: Props) => {
       return;
     }
 
-    // ─────────────────────────────────────
-    // ENTRADA NORMAL
-    // ─────────────────────────────────────
     if (existing) {
       setLoading(false);
 
@@ -145,9 +136,6 @@ export const ScannerScreen = ({ navigation, route }: Props) => {
       return;
     }
 
-    // ─────────────────────────────────────
-    // PRODUCTO NO REGISTRADO
-    // ─────────────────────────────────────
     const info = await lookupBarcode(code);
 
     setLoading(false);

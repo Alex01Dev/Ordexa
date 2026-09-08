@@ -33,7 +33,6 @@ export const ProductFormScreen = ({ navigation, route }: Props) => {
     );
 
     const handleSave = () => {
-        // Solo nombre y precio son obligatorios
         if (!name.trim() || !price.trim()) {
             Alert.alert(
                 'Faltan datos',
@@ -46,7 +45,6 @@ export const ProductFormScreen = ({ navigation, route }: Props) => {
             const input = {
                 name: name.trim(),
 
-                // Código de barras opcional
                 sku: sku.trim() || undefined,
 
                 category: category.trim() || undefined,

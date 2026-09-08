@@ -43,7 +43,6 @@ export const ProductListScreen = ({ navigation }: Props) => {
         }}
       />
 
-      {/* Vender */}
       <TouchableOpacity
         style={[styles.actionBtn, styles.saleBtn]}
         onPress={() => navigation.navigate('Sale')}
@@ -52,7 +51,6 @@ export const ProductListScreen = ({ navigation }: Props) => {
         <Text style={styles.actionLabel}>Vender producto</Text>
       </TouchableOpacity>
 
-      {/* Reabastecer */}
       <TouchableOpacity
         style={[styles.actionBtn, styles.restockBtn]}
         onPress={() => navigation.navigate('Restock', {})}
@@ -61,7 +59,6 @@ export const ProductListScreen = ({ navigation }: Props) => {
         <Text style={styles.actionLabel}>Reabastecer producto</Text>
       </TouchableOpacity>
 
-      {/* Nuevo producto + Stock bajo */}
       <View style={styles.row}>
         <TouchableOpacity
           style={[styles.actionBtn, styles.newBtn, styles.halfBtn]}
