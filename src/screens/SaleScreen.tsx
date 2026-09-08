@@ -27,14 +27,36 @@ export const SaleScreen = ({ navigation }: Props) => {
         clearTicket,
     } = useSaleTicket();
 
+    // =========================
+    // BÚSQUEDA DE PRODUCTOS
+    // =========================
+
     const [searchVisible, setSearchVisible] = useState(false);
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
+
+    // =========================
+    // CÁLCULO DE CAMBIO
+    // =========================
+
+    const [changeVisible, setChangeVisible] = useState(false);
+    const [payment, setPayment] = useState('');
+
+    // =========================
+    // TOTAL
+    // =========================
 
     const total = ticket.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
     );
+
+    const paymentAmount = Number(payment) || 0;
+    const change = paymentAmount - total;
+
+    // =========================
+    // BÚSQUEDA DE PRODUCTOS
+    // =========================
 
     const openProductSearch = () => {
         setSearch('');
@@ -48,6 +70,10 @@ export const SaleScreen = ({ navigation }: Props) => {
         const results = productRepository.getAll(text);
         setProducts(results);
     };
+
+    // =========================
+    // AGREGAR PRODUCTO
+    // =========================
 
     const handleAddProduct = (product: Product) => {
         if (product.stock <= 0) {
@@ -72,6 +98,32 @@ export const SaleScreen = ({ navigation }: Props) => {
         setSearch('');
         setProducts([]);
     };
+
+    // =========================
+    // CALCULAR CAMBIO
+    // =========================
+
+    const openChangeCalculator = () => {
+        if (ticket.length === 0) {
+            Alert.alert(
+                'Ticket vacío',
+                'Agrega al menos un producto antes de calcular el cambio.'
+            );
+            return;
+        }
+
+        setPayment('');
+        setChangeVisible(true);
+    };
+
+    const closeChangeCalculator = () => {
+        setPayment('');
+        setChangeVisible(false);
+    };
+
+    // =========================
+    // CANCELAR VENTA
+    // =========================
 
     const handleCancelSale = () => {
         if (ticket.length === 0) {
@@ -98,6 +150,10 @@ export const SaleScreen = ({ navigation }: Props) => {
             ]
         );
     };
+
+    // =========================
+    // CONFIRMAR VENTA
+    // =========================
 
     const handleConfirmSale = () => {
         if (ticket.length === 0) {
@@ -143,6 +199,10 @@ export const SaleScreen = ({ navigation }: Props) => {
     return (
         <View style={styles.container}>
 
+            {/* =========================
+                BOTONES DE ACCIÓN
+            ========================= */}
+
             <View style={styles.actionButtons}>
 
                 <TouchableOpacity
@@ -168,6 +228,10 @@ export const SaleScreen = ({ navigation }: Props) => {
                 </TouchableOpacity>
 
             </View>
+
+            {/* =========================
+                TICKET
+            ========================= */}
 
             <FlatList
                 data={ticket}
@@ -242,6 +306,7 @@ export const SaleScreen = ({ navigation }: Props) => {
                 )}
                 ListEmptyComponent={
                     <View style={styles.emptyContainer}>
+
                         <Text style={styles.emptyIcon}>
                             🛒
                         </Text>
@@ -251,15 +316,22 @@ export const SaleScreen = ({ navigation }: Props) => {
                         </Text>
 
                         <Text style={styles.empty}>
-                            Escanea un código o busca un producto por nombre o categoría para comenzar la venta.
+                            Escanea un código o busca un producto por nombre
+                            o categoría para comenzar la venta.
                         </Text>
+
                     </View>
                 }
             />
 
+            {/* =========================
+                FOOTER
+            ========================= */}
+
             <View style={styles.footer}>
 
                 <View style={styles.totalRow}>
+
                     <Text style={styles.totalLabel}>
                         Total
                     </Text>
@@ -267,7 +339,19 @@ export const SaleScreen = ({ navigation }: Props) => {
                     <Text style={styles.totalValue}>
                         ${total.toFixed(2)}
                     </Text>
+
                 </View>
+
+                {/* CALCULAR CAMBIO */}
+
+                <TouchableOpacity
+                    style={styles.changeButton}
+                    onPress={openChangeCalculator}
+                >
+                    <Text style={styles.changeButtonText}>
+                        💵 Calcular cambio
+                    </Text>
+                </TouchableOpacity>
 
                 <View style={styles.footerActions}>
 
@@ -292,6 +376,10 @@ export const SaleScreen = ({ navigation }: Props) => {
                 </View>
 
             </View>
+
+            {/* ==================================================
+                MODAL - BUSCAR PRODUCTO
+            ================================================== */}
 
             <Modal
                 visible={searchVisible}
@@ -333,7 +421,6 @@ export const SaleScreen = ({ navigation }: Props) => {
                             onChangeText={handleSearch}
                             autoFocus
                         />
-
 
                         <FlatList
                             data={products}
@@ -403,16 +490,139 @@ export const SaleScreen = ({ navigation }: Props) => {
                 </View>
             </Modal>
 
+            {/* ==================================================
+                MODAL - CALCULAR CAMBIO
+            ================================================== */}
+
+            <Modal
+                visible={changeVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={closeChangeCalculator}
+            >
+                <View style={styles.changeModalOverlay}>
+
+                    <View style={styles.changeModalContainer}>
+
+                        {/* HEADER */}
+
+                        <View style={styles.changeModalHeader}>
+
+                            <Text style={styles.changeModalTitle}>
+                                Calcular cambio
+                            </Text>
+
+                            <TouchableOpacity
+                                onPress={closeChangeCalculator}
+                            >
+                                <Text style={styles.changeCloseButton}>
+                                    ✕
+                                </Text>
+                            </TouchableOpacity>
+
+                        </View>
+
+                        {/* TOTAL */}
+
+                        <View style={styles.changeTotalContainer}>
+
+                            <Text style={styles.changeTotalLabel}>
+                                Total a pagar
+                            </Text>
+
+                            <Text style={styles.changeTotalValue}>
+                                ${total.toFixed(2)}
+                            </Text>
+
+                        </View>
+
+                        {/* PAGO DEL CLIENTE */}
+
+                        <Text style={styles.paymentLabel}>
+                            Cliente paga
+                        </Text>
+
+                        <TextInput
+                            style={styles.paymentInput}
+                            value={payment}
+                            onChangeText={setPayment}
+                            keyboardType="decimal-pad"
+                            placeholder="$0.00"
+                            placeholderTextColor="#9CA3AF"
+                            autoFocus
+                        />
+
+                        {/* RESULTADO */}
+
+                        {payment !== '' && (
+                            <>
+                                {change >= 0 ? (
+
+                                    <View style={styles.changeResult}>
+
+                                        <Text style={styles.changeResultLabel}>
+                                            Cambio
+                                        </Text>
+
+                                        <Text style={styles.changeResultAmount}>
+                                            ${change.toFixed(2)}
+                                        </Text>
+
+                                    </View>
+
+                                ) : (
+
+                                    <View style={styles.insufficientResult}>
+
+                                        <Text style={styles.insufficientLabel}>
+                                            Falta
+                                        </Text>
+
+                                        <Text style={styles.insufficientAmount}>
+                                            ${Math.abs(change).toFixed(2)}
+                                        </Text>
+
+                                    </View>
+
+                                )}
+                            </>
+                        )}
+
+                        {/* CERRAR */}
+
+                        <TouchableOpacity
+                            style={styles.closeChangeButton}
+                            onPress={closeChangeCalculator}
+                        >
+                            <Text style={styles.closeChangeButtonText}>
+                                Cerrar
+                            </Text>
+                        </TouchableOpacity>
+
+                    </View>
+
+                </View>
+            </Modal>
+
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+
+    // ==================================================
+    // CONTENEDOR
+    // ==================================================
+
     container: {
         flex: 1,
         backgroundColor: '#F9FAFB',
         padding: 16,
     },
+
+    // ==================================================
+    // BOTONES SUPERIORES
+    // ==================================================
 
     actionButtons: {
         gap: 8,
@@ -445,6 +655,10 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 16,
     },
+
+    // ==================================================
+    // TICKET
+    // ==================================================
 
     itemRow: {
         flexDirection: 'row',
@@ -518,6 +732,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 
+    // ==================================================
+    // TICKET VACÍO
+    // ==================================================
+
     emptyContainer: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -543,6 +761,10 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
 
+    // ==================================================
+    // FOOTER
+    // ==================================================
+
     footer: {
         borderTopWidth: 1,
         borderColor: '#E5E7EB',
@@ -552,7 +774,7 @@ const styles = StyleSheet.create({
     totalRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 14,
+        marginBottom: 12,
     },
 
     totalLabel: {
@@ -566,6 +788,30 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         color: '#111827',
     },
+
+    // ==================================================
+    // BOTÓN CALCULAR CAMBIO
+    // ==================================================
+
+    changeButton: {
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#D1D5DB',
+        paddingVertical: 13,
+        borderRadius: 12,
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+
+    changeButtonText: {
+        color: '#111827',
+        fontWeight: '700',
+        fontSize: 15,
+    },
+
+    // ==================================================
+    // ACCIONES DEL FOOTER
+    // ==================================================
 
     footerActions: {
         flexDirection: 'row',
@@ -598,6 +844,10 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         fontSize: 15,
     },
+
+    // ==================================================
+    // MODAL BUSCAR PRODUCTO
+    // ==================================================
 
     modalOverlay: {
         flex: 1,
@@ -710,5 +960,140 @@ const styles = StyleSheet.create({
         color: '#2563EB',
         fontWeight: '700',
         marginTop: 5,
+    },
+
+    // ==================================================
+    // MODAL CALCULAR CAMBIO
+    // ==================================================
+
+    changeModalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.45)',
+        justifyContent: 'flex-end',
+    },
+
+    changeModalContainer: {
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        padding: 24,
+        paddingBottom: 32,
+    },
+
+    changeModalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+
+    changeModalTitle: {
+        fontSize: 22,
+        fontWeight: '800',
+        color: '#111827',
+    },
+
+    changeCloseButton: {
+        fontSize: 22,
+        color: '#6B7280',
+        padding: 4,
+    },
+
+    changeTotalContainer: {
+        backgroundColor: '#F3F4F6',
+        borderRadius: 14,
+        padding: 18,
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+
+    changeTotalLabel: {
+        fontSize: 14,
+        color: '#6B7280',
+        marginBottom: 5,
+    },
+
+    changeTotalValue: {
+        fontSize: 30,
+        fontWeight: '800',
+        color: '#111827',
+    },
+
+    paymentLabel: {
+        fontSize: 14,
+        color: '#374151',
+        fontWeight: '600',
+        marginBottom: 7,
+    },
+
+    paymentInput: {
+        height: 56,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#D1D5DB',
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        fontSize: 22,
+        color: '#111827',
+        marginBottom: 18,
+    },
+
+    changeResult: {
+        backgroundColor: '#ECFDF5',
+        borderWidth: 1,
+        borderColor: '#A7F3D0',
+        borderRadius: 14,
+        padding: 18,
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+
+    changeResultLabel: {
+        fontSize: 14,
+        color: '#047857',
+        fontWeight: '600',
+        marginBottom: 4,
+    },
+
+    changeResultAmount: {
+        fontSize: 32,
+        fontWeight: '800',
+        color: '#059669',
+    },
+
+    insufficientResult: {
+        backgroundColor: '#FEF2F2',
+        borderWidth: 1,
+        borderColor: '#FECACA',
+        borderRadius: 14,
+        padding: 18,
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+
+    insufficientLabel: {
+        fontSize: 14,
+        color: '#B91C1C',
+        fontWeight: '600',
+        marginBottom: 4,
+    },
+
+    insufficientAmount: {
+        fontSize: 32,
+        fontWeight: '800',
+        color: '#DC2626',
+    },
+
+    closeChangeButton: {
+        backgroundColor: '#111827',
+        paddingVertical: 15,
+        borderRadius: 12,
+        alignItems: 'center',
+    },
+
+    closeChangeButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '700',
     },
 });

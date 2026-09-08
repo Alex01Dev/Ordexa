@@ -1,7 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { View, FlatList, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import {
+  View,
+  FlatList,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { productRepository } from '../database/productRepository';
 import { Product } from '../types';
@@ -27,7 +35,7 @@ export const ProductListScreen = ({ navigation }: Props) => {
     <View style={styles.container}>
       <TextInput
         style={styles.search}
-        placeholder="Buscar por nombre o QR..."
+        placeholder="Buscar por nombre, categoría o QR..."
         value={search}
         onChangeText={(text) => {
           setSearch(text);
@@ -35,6 +43,7 @@ export const ProductListScreen = ({ navigation }: Props) => {
         }}
       />
 
+      {/* Vender */}
       <TouchableOpacity
         style={[styles.actionBtn, styles.saleBtn]}
         onPress={() => navigation.navigate('Sale')}
@@ -43,6 +52,16 @@ export const ProductListScreen = ({ navigation }: Props) => {
         <Text style={styles.actionLabel}>Vender producto</Text>
       </TouchableOpacity>
 
+      {/* Reabastecer */}
+      <TouchableOpacity
+        style={[styles.actionBtn, styles.restockBtn]}
+        onPress={() => navigation.navigate('Restock', {})}
+      >
+        <Text style={styles.actionIcon}>📦</Text>
+        <Text style={styles.actionLabel}>Reabastecer producto</Text>
+      </TouchableOpacity>
+
+      {/* Nuevo producto + Stock bajo */}
       <View style={styles.row}>
         <TouchableOpacity
           style={[styles.actionBtn, styles.newBtn, styles.halfBtn]}
@@ -67,11 +86,17 @@ export const ProductListScreen = ({ navigation }: Props) => {
         renderItem={({ item }) => (
           <ProductCard
             product={item}
-            onPress={() => navigation.navigate('ProductDetail', { productId: item.id })}
+            onPress={() =>
+              navigation.navigate('ProductDetail', {
+                productId: item.id,
+              })
+            }
           />
         )}
         ListEmptyComponent={
-          <Text style={styles.empty}>No hay productos registrados todavía.</Text>
+          <Text style={styles.empty}>
+            No hay productos registrados todavía.
+          </Text>
         }
         contentContainerStyle={{ paddingTop: 4 }}
       />
@@ -80,7 +105,12 @@ export const ProductListScreen = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#F9FAFB' },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#F9FAFB',
+  },
+
   search: {
     backgroundColor: '#fff',
     borderWidth: 1,
@@ -89,8 +119,16 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 14,
   },
-  row: { flexDirection: 'row', gap: 10 },
-  halfBtn: { flex: 1 },
+
+  row: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+
+  halfBtn: {
+    flex: 1,
+  },
+
   actionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -101,13 +139,43 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     elevation: 2,
   },
-  actionIcon: { fontSize: 22, marginRight: 8 },
-  actionLabel: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  saleBtn: { backgroundColor: '#DC2626' },
-  newBtn: { backgroundColor: '#2563EB' },
-  lowStockBtn: { backgroundColor: '#D97706' },
-  empty: { textAlign: 'center', color: '#6B7280', marginTop: 40 },
+
+  actionIcon: {
+    fontSize: 22,
+    marginRight: 8,
+  },
+
+  actionLabel: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
+  saleBtn: {
+    backgroundColor: '#DC2626',
+  },
+
+  restockBtn: {
+    backgroundColor: '#16A34A',
+  },
+
+  newBtn: {
+    backgroundColor: '#2563EB',
+  },
+
+  lowStockBtn: {
+    backgroundColor: '#D97706',
+  },
+
+  empty: {
+    textAlign: 'center',
+    color: '#6B7280',
+    marginTop: 40,
+  },
 });
